@@ -12,12 +12,12 @@ class Card {
         $this->City = $city;
         // On construit le code HTML qui sera affiché
         $this->HTML = "
-            <div class=\"col-10 col-md-5 col-lg-4 col-xl-3 mb-3\">
+            <div class=\"col-10 col-md-5 col-lg-4 col-xl-3 mx-3 mb-3\">
                 <div class=\"shadow rounded p-3\">
                     <div>
-                        ".$image."
+                        <img src=\"assets/img/1450985_012-_Carnaval._200x100._Huile_sur_toile.jpg\" alt=\"Photo de ".$title."\" width=\"100%\">
                     </div>
-                    <div>
+                    <div class=\"mt-3\">
                         <div>
                             <p>".$title."</p>
                             <hr>
@@ -69,8 +69,13 @@ class Card {
                             <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
                         </div>
                         <div class=\"modal-body\">
-                            <form action=\"index.php?modif=".$id."\" method=\"POST\" class=\"rounded p-4\">
+                            <form action=\"index.php\" method=\"POST\" enctype=\"multipart/form-data\" class=\"rounded p-4\">
                                 <input type=\"hidden\" name=\"csrf_token\" value=\"".$_SESSION['csrf_token']."\">
+                                <input type=\"hidden\" name=\"id\" value=\"".$id."\">
+                                <div class=\"mb-3\">
+                                    <label for=\"photo\" class=\"textMoyen pb-2\">Nouvelle photo&nbsp;:</label>
+                                    <input type=\"file\" name=\"photo\" class=\"form-control bg-transparent\">
+                                </div>
                                 <div class=\"mb-3\">
                                     <label for=\"titre\" class=\"textMoyen pb-2\">Nouveau titre&nbsp;:</label>
                                     <input type=\"text\" name=\"titre\" class=\"form-control bg-transparent\">

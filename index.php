@@ -3,7 +3,7 @@ require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Card.php'; // On importe le composant Card
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 
-echo 'BB';
+echo 'CC';
 
 // Pour supprimer un élément
 if (isset($_POST['submitDelete'])) {
@@ -39,7 +39,7 @@ if (isset($_POST['submitDelete'])) {
 if (isset($_POST['submitModifier'])) {
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
 
-        $id = $_GET['modif'];
+        $id = $_POST['id'];
         $queryModif = "SELECT * FROM annonces WHERE id = $id";
         $queryModif = $pdo->prepare($queryModif);
         $queryModif->execute();
