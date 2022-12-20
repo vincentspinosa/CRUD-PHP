@@ -5,10 +5,8 @@ function upload_file() {
     global $repertoireCible;
     global $fichierCible;
     $repertoireCible = 'assets/img/';
-    var_dump($repertoireCible);
     // On spécifie le nom du fichier à créér
     $fichierCible = $repertoireCible . basename($_FILES["photo"]["name"]);
-    var_dump($fichierCible);
     // On regarde si le fichier existe déjà
     if (file_exists($fichierCible)) { 
         global $fichierExiste;
@@ -29,9 +27,7 @@ function upload_file() {
         return $mauvaisType;
     }
     // On a passé les tests, on upload le fichier
-    echo "On tente d'uploader";
     $upload = move_uploaded_file($_FILES["photo"]["tmp_name"], $fichierCible);
-    var_dump($upload);
     return ($upload === true) ? true : false;
 } 
 

@@ -1,11 +1,6 @@
 - Traitement des images
-    - Insérer path en BDD
     - Modif :
         - Upload de la nouvelle photo
         - Si OK, suppression de l'ancienne
         - Modif path BDD
-    - Cards : photos
-    
-- Dernières vérifs
-
-- Relecture et correction
+    - Commentaires relatifs

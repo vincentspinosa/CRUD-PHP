@@ -15,7 +15,7 @@ class Card {
             <div class=\"col-10 col-md-5 col-lg-4 col-xl-3 mx-3 mb-3\">
                 <div class=\"shadow rounded p-3\">
                     <div>
-                        <img src=\"assets/img/1450985_012-_Carnaval._200x100._Huile_sur_toile.jpg\" alt=\"Photo de ".$title."\" width=\"100%\">
+                        <img src=\"$image\" alt=\"Photo de ".$title."\" width=\"100%\">
                     </div>
                     <div class=\"mt-3\">
                         <div>

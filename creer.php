@@ -3,7 +3,7 @@ require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fichiers
 
-echo 'FF';
+echo 'YY';
 
 /////////////////////////////////
 // Code pour proster une annonce
@@ -15,7 +15,6 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
 
         // Si tous les champs nécessaires sont remplis        
         if (isset($_FILES['photo']) && isset($_POST['titre']) && isset($_POST['tarif']) && isset($_POST['m2']) && isset($_POST['ville'])) {
-            var_dump($_FILES['photo']);
             $titre = htmlspecialchars($_POST['titre']);
             $tarif = $_POST['tarif'] * 100;
             $m2 = $_POST['m2'];
@@ -24,10 +23,9 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
 
             // On essaye d'uploader la photo
             $photo = upload_file();
-            echo $photo;
-            echo 'kjhghfgd';
-            if ($photo !== true) { // Si on a échoué, on arrête le processus
-                $annonceCreee = false;
+            if ($photo !== true) { // Si on échoue, on arrête le processus
+                $photoOK = false;
+                goto endgoto;
             }
 
             // On sélectionne le nombre d'annonces pour avoir le total
@@ -38,7 +36,7 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
 
             // On insère la nouvelle annonce dans notre Base de données
             //On prépare notre requuête à l'avance
-            $query = "INSERT INTO annonces (titre, tarif, m2, ville, description) VALUES ('$titre', $tarif, $m2, '$ville', '$description')";
+            $query = "INSERT INTO annonces (titre, tarif, m2, ville, description, photo) VALUES ('$titre', $tarif, $m2, '$ville', '$description', '$fichierCible')";
             $query = $pdo->prepare($query); // On utilise la méthode 'prepare' de l'objet PDO
             $query->execute(); // On exécute la requête
 
@@ -80,6 +78,7 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
         }
     }
 }
+endgoto:
 
 include 'assets/include/components/Head.html'; // On inclut le Head de notre page HTML
 ?>
@@ -96,10 +95,15 @@ include 'assets/include/components/Header.html'; // On inclut le Header
 // On affiche les messages à destination de l'utilisateur
 if ($annonceCreee === true) {
     new MessageOK(['Votre annonce a bien été publiée&nbsp!']);
-} elseif ($annonceCreee === false) {
+}
+if ($annonceCreee === false) {
     new MessageERROR(['Une erreur est survenue&nbsp!']);
-} elseif ($messageTraite === false) {
+}
+if ($messageTraite === false) {
     new MessageERROR($messageErreur);
+}
+if ($photoOK === false) {
+    new MessageERROR(['La photo n\'a pas pû être uploadée&nbsp!']);
 }
 ?>
 

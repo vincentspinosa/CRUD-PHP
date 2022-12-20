@@ -3,7 +3,7 @@ require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Card.php'; // On importe le composant Card
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 
-echo 'CC';
+echo 'GG';
 
 // Pour supprimer un élément
 if (isset($_POST['submitDelete'])) {
@@ -13,8 +13,10 @@ if (isset($_POST['submitDelete'])) {
         $queryDelete = "SELECT * FROM annonces WHERE id = $id";
         $queryDelete = $pdo->prepare($queryDelete);
         $queryDelete->execute();
+        $data = $queryDelete->fetchAll(PDO::FETCH_ASSOC);
 
         if ($queryDelete->rowCount() === 1) {
+            unlink($data[0]['photo']); // On supprime la photo
             $queryDelete = "DELETE FROM annonces WHERE id = $id";
             $queryDelete = $pdo->prepare($queryDelete);
             $queryDelete->execute();
@@ -206,7 +208,7 @@ if ($annonceModif === true) {
             <?php
             // Pour chaque annonce, nous affichons un composant Card
             foreach ($data as $dt) {
-                $card = new Card($dt['id'], $dt['titre'], 'image', $dt['tarif'], $dt['m2'], $dt['ville'], $dt['description']);
+                $card = new Card($dt['id'], $dt['titre'], $dt['photo'], $dt['tarif'], $dt['m2'], $dt['ville'], $dt['description']);
                 $card->showHTML();
             }
             ?>
