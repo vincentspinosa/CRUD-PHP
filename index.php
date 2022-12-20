@@ -54,53 +54,89 @@ if (isset($_POST['submitModifier'])) {
         $queryModif->execute();
 
         if ($queryModif->rowCount() === 1) {
-            if (isset($_FILES['photo'])) {
+
+            $arrayTrue = [];
+            $arrayFalse = [];
+
+            if (isset($_FILES['photo']) && !empty($_FILES['photo']['name'])) {
+                var_dump($_FILES['photo']);
                 $data = $queryModif->fetchAll();
                 // On essaye d'uploader la photo
                 $photo = upload_file();
                 if ($photo !== true) { // Si on échoue, on arrête le processus
-                    goto endgoto;
+                    array_push($arrayFalse, 'La photo n\'a pas pû être modifiée.');
+                } else {
+                    // On supprime l'ancienne photo
+                    unlink($data[0]['photo']);
+                    array_push($arrayTrue, 'La photo a été modifiée.');
+                    // On modifie l'adresse de la photo dans la base de données
+                    $query = "UPDATE annonces SET photo = '$fichierCible' WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+
                 }
-                // On supprime l'ancienne photo
-                unlink($data[0]['photo']);
-                // On modifie l'adresse de la photo dans la base de données
-                $query = "UPDATE annonces SET photo = '$fichierCible' WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
             }
-            endgoto:
+
             if (isset($_POST['titre']) && !empty($_POST['titre'])) {
                 // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux
                 $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES);
-                $query = "UPDATE annonces SET titre = '$titre' WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
+                if (strlen($titre) <= 100) {
+                    $query = "UPDATE annonces SET titre = '$titre' WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+                    array_push($arrayTrue, 'Le titre a été modifié.');
+                } else {
+                    array_push($arrayFalse, 'Le titre n\'a pas pû être modifié.');
+                }
             }
+
             if (isset($_POST['tarif']) && !empty($_POST['tarif'])) {
                 $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
-                $query = "UPDATE annonces SET tarif = $tarif WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
+                if ($tarif / 100 > 0 && $tarif / 100 < 100000) {
+                    $query = "UPDATE annonces SET tarif = $tarif WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+                    array_push($arrayTrue, 'Le tarif a été modifié.');
+                } else {
+                    array_push($arrayFalse, 'Le tarif n\'a pas pû être modifié.');
+                }
             }
+
             if (isset($_POST['ville']) && !empty($_POST['ville'])) {
                 $ville = htmlspecialchars($_POST['ville'], ENT_QUOTES);
-                $query = "UPDATE annonces SET ville = '$ville' WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
+                if (strlen($ville) <= 100) {
+                    $query = "UPDATE annonces SET ville = '$ville' WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+                    array_push($arrayTrue, 'La ville a été modifiée.');
+                } else {
+                    array_push($arrayFalse, 'La ville n\'a pas pû être modifiée.');
+                }
             }
+
             if (isset($_POST['m2']) && !empty($_POST['m2'])) {
                 $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);
-                $query = "UPDATE annonces SET m2 = '$m2' WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
+                if ($m2 > 0 && $m2 < 100000){
+                    $query = "UPDATE annonces SET m2 = '$m2' WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+                    array_push($arrayTrue, 'La surface a été modifiée.');
+                } else {
+                    array_push($arrayFalse, 'La surface n\'a pas pû être modifiée.');
+                }
             }
+
             if (isset($_POST['description']) && !empty($_POST['description'])) {
                 $description = htmlspecialchars($_POST['description'], ENT_QUOTES);
-                $query = "UPDATE annonces SET description = '$description' WHERE id = $id";
-                $query = $pdo->prepare($query);
-                $query->execute();
+                if (strlen($description) <= 2500) {
+                    $query = "UPDATE annonces SET description = '$description' WHERE id = $id";
+                    $query = $pdo->prepare($query);
+                    $query->execute();
+                    array_push($arrayTrue, 'La description a été modifiée.');
+                } else {
+                    array_push($arrayFalse, 'La description n\'a pas pû être modifiée.');
+                }
             }
-            $annonceModif = true;
 
         } else {
             $annonceModifInexistante = true;
@@ -165,9 +201,10 @@ if ($annonceDelete === false) {
 if ($annonceInexistante === true || $annonceModifInexistante === true) {
     new MessageERROR(['Cette annonce n\'existe pas&nbsp!']);
 }
-if ($annonceModif === true) {
-    new MessageOK(['Les modifications ont bien été effectuées&nbsp!']);
-}
+if (count($arrayFalse) > 0)
+    new MessageERROR($arrayFalse);
+if (count($arrayTrue) > 0)
+    new MessageOK($arrayTrue);
 ?>
 
 <div class="container-fluid">

@@ -21,10 +21,41 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             // $variable = (condition) ? option 1 : option 2
             $description = (isset($_POST['description'])) ? htmlspecialchars($_POST['description'], ENT_QUOTES) : NULL;
 
+            if (strlen($titre) > 100) { // strlen() nous permet de compter le nombre de caractères dans une string
+                $formatTitre = false;
+                $annonceCreee = false;
+                $pbFormat = true;
+            }
+            if (!($tarif / 100 > 1 && $tarif / 100 < 100000)) {
+                $formatTarif = false;
+                $annonceCreee = false;
+                $pbFormat = true;
+            }
+            if ($m2 < 10 || $m2 >= 100000) {
+                $formatM2 = false;
+                $annonceCreee = false;
+                $pbFormat = true;
+            }
+            if (strlen($ville) > 100) {
+                $formatVille = false;
+                $annonceCreee = false;
+                $pbFormat = true;
+            }
+            if (strlen($description) > 2500) {
+                $formatDescription = false;
+                $annonceCreee = false;
+                $pbFormat = true;
+            }
+
+            if ($pbFormat === true) {
+                goto endgoto;
+            }
+
             // On essaye d'uploader la photo
             $photo = upload_file();
             if ($photo !== true) { // Si on échoue, on arrête le processus
                 $photoOK = false;
+                $annonceCreee = false;
                 goto endgoto;
             }
 
@@ -57,22 +88,22 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             $messageErreur = []; // On crée un array pour stocker les possibles message d'erreurs
             // Pour chaque erreur, on ajoute le message à l'array
             if (!isset($_FILES['photo'])) {
-                $messageErreur += "La photo est manquante.<br>";
+                array_push($messageErreur, "La photo est manquante.");
             }
             if (!isset($_POST['titre'])) {
-                $messageErreur += "Le titre est manquant.<br>";
+                array_push($messageErreur, "Le titre est manquant.");
             }
             if (!isset($_POST['tarif'])) {
-                $messageErreur += "Le tarif est manquant.<br>";                
+                array_push($messageErreur, "Le tarif est manquant.");                
             }
             if (!isset($_POST['m2'])) {
-                $messageErreur += "La surface est manquante.<br>";                
+                array_push($messageErreur, "La surface est manquante.");                
             }
             if (!isset($_POST['ville'])) {
-                $messageErreur += "La ville est manquante.<br>";                
+                array_push($messageErreur, "La ville est manquante.");                
             }
             if (!isset($_POST['description'])) {
-                $messageErreur += "La description est manquante.";                
+                array_push($messageErreur, "La description est manquante.");                
             }
         }
     }
@@ -101,8 +132,23 @@ if ($annonceCreee === false) {
 if ($messageTraite === false) {
     new MessageERROR($messageErreur);
 }
+if ($formatTitre === false) {
+    new MessageERROR(['Le titre doit faire maximum 100 caractères&nbsp!']);
+}
+if ($formatTarif === false) {
+    new MessageERROR(['Le tarif doit être compris entre 1 et 99999€&nbsp!']);
+}
+if ($formatM2 === false) {
+    new MessageERROR(['La surface doit être comprise entre 0 et 99999m2&nbsp!']);
+}
+if ($formatVille === false) {
+    new MessageERROR(['La ville doit faire maximum 100 caractères&nbsp!']);
+}
+if ($formatDescription === false) {
+    new MessageERROR(['La description doit faire maximum 2500 caractères&nbsp!']);
+}
 if ($photoOK === false) {
-    new MessageERROR(['La photo n\'a pas pû être uploadée&nbsp!']);
+    new MessageERROR(['La photo n\'a pas pû être uploadée&nbsp;!']);
 }
 ?>
 
