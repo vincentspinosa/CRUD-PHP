@@ -14,7 +14,8 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
         // Si tous les champs nécessaires sont remplis        
         if (isset($_FILES['photo'], $_POST['titre'], $_POST['tarif'], $_POST['m2'], $_POST['ville'])) {
             
-            $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES); // htmlspecialchars dit à l'interpréteur de lire les caractères HTML spéciaux comme des caractères normaux
+            // htmlspecialchars convertit des caractères spéciaux (comme '&' ou '" "') en entités html (comme '&amp;' ou '&quot')
+            $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES);
             $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
             $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);
             $ville = htmlspecialchars($_POST['ville'], ENT_QUOTES);
@@ -49,7 +50,7 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             }
 
             if ($pbFormat === true) {
-                goto endgoto;
+                goto endgoto; // on va à notre point d'ancrage "endgoto:" (ligne 112)
             }
 
             // On essaye d'uploader la photo
@@ -64,7 +65,7 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             $query = "SELECT * FROM annonces"; // On prépare notre requête à l'avance
             $query = $pdo->prepare($query); // On utilise la méthode 'prepare' de l'objet PDO pour se protéger des injections SQL
             $query->execute(); // On exécute la requête
-            $resultA = $query->rowCount(); // On récupère le total
+            $resultA = $query->rowCount(); // On récupère le nombre total d'annonces
 
             // On insère la nouvelle annonce dans notre Base de données
             $query = "INSERT INTO annonces (titre, tarif, m2, ville, description, photo) VALUES ('$titre', $tarif, $m2, '$ville', '$description', '$fichierCible')";
