@@ -77,8 +77,8 @@ if (isset($_POST['submitModifier'])) {
                 $query->execute();
             }
             if (isset($_POST['tarif']) && !empty($_POST['tarif'])) {
-                $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES);
-                $query = "UPDATE annonces SET tarif = $tarif * 100 WHERE id = $id";
+                $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
+                $query = "UPDATE annonces SET tarif = $tarif WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
