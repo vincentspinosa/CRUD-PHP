@@ -12,7 +12,8 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) { // Si l'input 'token_csrf' est valide
 
         // Si tous les champs nécessaires sont remplis        
-        if (isset($_FILES['photo']) && isset($_POST['titre']) && isset($_POST['tarif']) && isset($_POST['m2']) && isset($_POST['ville'])) {
+        if (isset($_FILES['photo'], $_POST['titre'], $_POST['tarif'], $_POST['m2'], $_POST['ville'])) {
+            
             $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES); // htmlspecialchars dit à l'interpréteur de lire les caractères HTML spéciaux comme des caractères normaux
             $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
             $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);

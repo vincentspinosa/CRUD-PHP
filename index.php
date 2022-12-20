@@ -58,8 +58,7 @@ if (isset($_POST['submitModifier'])) {
             $arrayTrue = [];
             $arrayFalse = [];
 
-            if (isset($_FILES['photo']) && !empty($_FILES['photo']['name'])) {
-                var_dump($_FILES['photo']);
+            if (!empty($_FILES['photo']['name'])) {
                 $data = $queryModif->fetchAll();
                 // On essaye d'uploader la photo
                 $photo = upload_file();
@@ -77,7 +76,7 @@ if (isset($_POST['submitModifier'])) {
                 }
             }
 
-            if (isset($_POST['titre']) && !empty($_POST['titre'])) {
+            if (!empty($_POST['titre'])) {
                 // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux
                 $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES);
                 if (strlen($titre) <= 100) {
@@ -90,7 +89,7 @@ if (isset($_POST['submitModifier'])) {
                 }
             }
 
-            if (isset($_POST['tarif']) && !empty($_POST['tarif'])) {
+            if (!empty($_POST['tarif'])) {
                 $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
                 if ($tarif / 100 > 0 && $tarif / 100 < 100000) {
                     $query = "UPDATE annonces SET tarif = $tarif WHERE id = $id";
@@ -102,7 +101,7 @@ if (isset($_POST['submitModifier'])) {
                 }
             }
 
-            if (isset($_POST['ville']) && !empty($_POST['ville'])) {
+            if (!empty($_POST['ville'])) {
                 $ville = htmlspecialchars($_POST['ville'], ENT_QUOTES);
                 if (strlen($ville) <= 100) {
                     $query = "UPDATE annonces SET ville = '$ville' WHERE id = $id";
@@ -114,7 +113,7 @@ if (isset($_POST['submitModifier'])) {
                 }
             }
 
-            if (isset($_POST['m2']) && !empty($_POST['m2'])) {
+            if (!empty($_POST['m2'])) {
                 $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);
                 if ($m2 > 0 && $m2 < 100000){
                     $query = "UPDATE annonces SET m2 = '$m2' WHERE id = $id";
@@ -126,7 +125,7 @@ if (isset($_POST['submitModifier'])) {
                 }
             }
 
-            if (isset($_POST['description']) && !empty($_POST['description'])) {
+            if (!empty($_POST['description'])) {
                 $description = htmlspecialchars($_POST['description'], ENT_QUOTES);
                 if (strlen($description) <= 2500) {
                     $query = "UPDATE annonces SET description = '$description' WHERE id = $id";
