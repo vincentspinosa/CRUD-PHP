@@ -7,6 +7,7 @@ include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fi
 //////////////////////////////////////////////
 // Pour supprimer un élément
 //////////////////////////////////////////////
+
 if (isset($_POST['submitDelete'])) { // Si le formulaire a été envoyé
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) { // Si l'input 'token_csrf' est valide
         
@@ -17,7 +18,7 @@ if (isset($_POST['submitDelete'])) { // Si le formulaire a été envoyé
         $data = $queryDelete->fetchAll(PDO::FETCH_ASSOC); // On stocke le résultat de la requête dans un array
 
         if ($queryDelete->rowCount() === 1) {
-             // On supprime la photo
+            // On supprime la photo
             unlink($data[0]['photo']);
 
             // On supprime l'annonce
@@ -45,6 +46,7 @@ if (isset($_POST['submitDelete'])) { // Si le formulaire a été envoyé
 //////////////////////////////////////////////
 //Pour modifier un élément
 //////////////////////////////////////////////
+
 if (isset($_POST['submitModifier'])) {
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
 
@@ -52,22 +54,22 @@ if (isset($_POST['submitModifier'])) {
         $queryModif = "SELECT * FROM annonces WHERE id = $id";
         $queryModif = $pdo->prepare($queryModif);
         $queryModif->execute();
+        $data = $queryModif->fetchAll()[0]; // On récupère le rang à traiter
 
         if ($queryModif->rowCount() === 1) {
 
-            $arrayTrue = [];
-            $arrayFalse = [];
+            $arrayTrue = []; // On crée un array pour stocker les modifications valides
+            $arrayFalse = []; // On crée un array pour stocker les modifications erronées
 
-            if (!empty($_FILES['photo']['name'])) {
-                $data = $queryModif->fetchAll();
+            if (!empty($_FILES['photo']['name'])) { // Si un fichier a été uploadé
                 // On essaye d'uploader la photo
                 $photo = upload_file();
                 if ($photo !== true) { // Si on échoue, on arrête le processus
-                    array_push($arrayFalse, 'La photo n\'a pas pû être modifiée.');
+                    array_push($arrayFalse, 'La photo n\'a pas pû être modifiée.'); // On insère le msg d'erreur dans l'array correspondant
+
                 } else {
-                    // On supprime l'ancienne photo
-                    unlink($data[0]['photo']);
-                    array_push($arrayTrue, 'La photo a été modifiée.');
+                    unlink($data['photo']); // On supprime l'ancienne photo
+                    array_push($arrayTrue, 'La photo a été modifiée&nbsp!');
                     // On modifie l'adresse de la photo dans la base de données
                     $query = "UPDATE annonces SET photo = '$fichierCible' WHERE id = $id";
                     $query = $pdo->prepare($query);
@@ -77,7 +79,7 @@ if (isset($_POST['submitModifier'])) {
             }
 
             if (!empty($_POST['titre'])) {
-                // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux (du code HTML)
+                // htmlspecialchars convertit des caractères spéciaux (comme '&' ou '" "') en entités html (comme '&amp;' ou '&quot')
                 $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES); // On transforme les caractères spéciaux en code HTML
                 if (strlen($titre) <= 100) { // Condition
                     // Si la condition est remplie, on met à jour
@@ -85,10 +87,10 @@ if (isset($_POST['submitModifier'])) {
                     $query = $pdo->prepare($query);
                     $query->execute();
                     // On ajoute la data à l'array tenant compte des succès
-                    array_push($arrayTrue, 'Le titre a été modifié.');
+                    array_push($arrayTrue, 'Le titre a été modifié&nbsp!');
                 } else {
                     // Ou à celui tenant compte des erreurs
-                    array_push($arrayFalse, 'Le titre n\'a pas pû être modifié.');
+                    array_push($arrayFalse, 'Le titre doit faire maximum 100 caractères&nbsp!');
                 }
             }
 
@@ -98,9 +100,9 @@ if (isset($_POST['submitModifier'])) {
                     $query = "UPDATE annonces SET tarif = $tarif WHERE id = $id";
                     $query = $pdo->prepare($query);
                     $query->execute();
-                    array_push($arrayTrue, 'Le tarif a été modifié.');
+                    array_push($arrayTrue, 'Le tarif a été modifié&nbsp!');
                 } else {
-                    array_push($arrayFalse, 'Le tarif n\'a pas pû être modifié.');
+                    array_push($arrayFalse, 'Le tarif doit être compris entre 1 et 99999€&nbsp!');
                 }
             }
 
@@ -110,9 +112,9 @@ if (isset($_POST['submitModifier'])) {
                     $query = "UPDATE annonces SET ville = '$ville' WHERE id = $id";
                     $query = $pdo->prepare($query);
                     $query->execute();
-                    array_push($arrayTrue, 'La ville a été modifiée.');
+                    array_push($arrayTrue, 'La ville a été modifiée&nbsp!');
                 } else {
-                    array_push($arrayFalse, 'La ville n\'a pas pû être modifiée.');
+                    array_push($arrayFalse, 'La ville doit faire maximum 100 caractères&nbsp!');
                 }
             }
 
@@ -122,9 +124,9 @@ if (isset($_POST['submitModifier'])) {
                     $query = "UPDATE annonces SET m2 = '$m2' WHERE id = $id";
                     $query = $pdo->prepare($query);
                     $query->execute();
-                    array_push($arrayTrue, 'La surface a été modifiée.');
+                    array_push($arrayTrue, 'La surface a été modifiée&nbsp!');
                 } else {
-                    array_push($arrayFalse, 'La surface n\'a pas pû être modifiée.');
+                    array_push($arrayFalse, 'La surface doit être comprise entre 0 et 99999m2&nbsp!');
                 }
             }
 
@@ -134,9 +136,9 @@ if (isset($_POST['submitModifier'])) {
                     $query = "UPDATE annonces SET description = '$description' WHERE id = $id";
                     $query = $pdo->prepare($query);
                     $query->execute();
-                    array_push($arrayTrue, 'La description a été modifiée.');
+                    array_push($arrayTrue, 'La description a été modifiée&nbsp!');
                 } else {
-                    array_push($arrayFalse, 'La description n\'a pas pû être modifiée.');
+                    array_push($arrayFalse, 'La description doit faire maximum 2500 caractères&nbsp!');
                 }
             }
 
@@ -217,7 +219,7 @@ if (count($arrayTrue) > 0)
                 <div class="input-group shadow p-2 rounded justify-content-around">
                     <select name="sortBy" class="ipt-search px-1 mx-2 rounded border my-1 textMoyen" style="max-width: 90%;" role="button">
                         <?php
-                        /* Nous stockons toutes les options de tri dans un array, avec en première position la data passée à la requête,
+                        /* Nous stockons toutes les options de tri dans un array, avec en première position la data que l'on passera à la requête,
                             et en seconde le texte affiché dans le navigateur */
                         $array = [['Date ↓', 'Date de publication ↓'], 
                             ['Date ↑', 'Date de publication ↑'], 
@@ -264,7 +266,7 @@ if (count($arrayTrue) > 0)
         </div>
     </div>
             
-    <div class="row justify-content-center" style=" min-height: 90vh;">
+    <div class="row justify-content-center" style="min-height: 90vh;">
         <div class="d-flex flex-wrap justify-content-around mt-3 mx-2 mb-5">
             <?php
             // Pour chaque annonce, nous affichons un composant Card
