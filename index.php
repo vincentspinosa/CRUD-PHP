@@ -2,8 +2,7 @@
 require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Card.php'; // On importe le composant Card
 include 'assets/include/components/Message.php'; // On inclut le composant Message
-
-echo 'GG';
+include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fichiers
 
 // Pour supprimer un élément
 if (isset($_POST['submitDelete'])) {
@@ -47,6 +46,18 @@ if (isset($_POST['submitModifier'])) {
         $queryModif->execute();
 
         if ($queryModif->rowCount() === 1) {
+            if (isset($_FILES['photo'])) {
+                $data = $queryModif->fetchAll();
+                $photo = upload_file();
+                if ($photo !== true) { // Si on échoue, on arrête le processus
+                    goto endgoto;
+                }
+                unlink($data[0]['photo']);
+                $query = "UPDATE annonces SET photo = '$fichierCible' WHERE id = $id";
+                $query = $pdo->prepare($query);
+                $query->execute();
+            }
+            endgoto:
             if (isset($_POST['titre']) && !empty($_POST['titre'])) {
                 // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme "") comme des caractères normaux
                 $titre = htmlspecialchars($_POST['titre']);
