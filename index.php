@@ -77,14 +77,17 @@ if (isset($_POST['submitModifier'])) {
             }
 
             if (!empty($_POST['titre'])) {
-                // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux
-                $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES);
-                if (strlen($titre) <= 100) {
+                // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux (du code HTML)
+                $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES); // On transforme les caractères spéciaux en code HTML
+                if (strlen($titre) <= 100) { // Condition
+                    // Si la condition est remplie, on met à jour
                     $query = "UPDATE annonces SET titre = '$titre' WHERE id = $id";
                     $query = $pdo->prepare($query);
                     $query->execute();
+                    // On ajoute la data à l'array tenant compte des succès
                     array_push($arrayTrue, 'Le titre a été modifié.');
                 } else {
+                    // Ou à celui tenant compte des erreurs
                     array_push($arrayFalse, 'Le titre n\'a pas pû être modifié.');
                 }
             }
