@@ -1,6 +1,0 @@
-- Traitement des images
-    - Modif :
-        - Upload de la nouvelle photo
-        - Si OK, suppression de l'ancienne
-        - Modif path BDD
-    - Commentaires relatifs
