@@ -21,6 +21,7 @@ function upload_file() {
         return false;
     }
     // On a passé les tests, on upload le fichier
+    // Pour les utilisateurs de Mac, vérifier qu'on a bien le droit d'écrire dans le répertoire cible
     $upload = move_uploaded_file($_FILES["photo"]["tmp_name"], $fichierCible);
     return ($upload === true) ? true : false;
 } 

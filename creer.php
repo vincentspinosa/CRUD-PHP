@@ -3,8 +3,6 @@ require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fichiers
 
-echo 'JJ';
-
 /////////////////////////////////
 // Code pour proster une annonce
 /////////////////////////////////
@@ -15,13 +13,13 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
 
         // Si tous les champs nécessaires sont remplis        
         if (isset($_FILES['photo']) && isset($_POST['titre']) && isset($_POST['tarif']) && isset($_POST['m2']) && isset($_POST['ville'])) {
-            $titre = htmlspecialchars($_POST['titre']); // htmlspecialchars dit à l'interpréteur de lire les caractères HTML spéciaux comme des caractères normaux
-            $tarif = $_POST['tarif'] * 100;
-            $m2 = $_POST['m2'];
-            $ville = htmlspecialchars($_POST['ville']);
+            $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES); // htmlspecialchars dit à l'interpréteur de lire les caractères HTML spéciaux comme des caractères normaux
+            $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES) * 100;
+            $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);
+            $ville = htmlspecialchars($_POST['ville'], ENT_QUOTES);
             // écriture ternaire
             // $variable = (condition) ? option 1 : option 2
-            $description = (isset($_POST['description'])) ? htmlspecialchars($_POST['description']) : NULL;
+            $description = (isset($_POST['description'])) ? htmlspecialchars($_POST['description'], ENT_QUOTES) : NULL;
 
             // On essaye d'uploader la photo
             $photo = upload_file();

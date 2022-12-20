@@ -71,31 +71,31 @@ if (isset($_POST['submitModifier'])) {
             endgoto:
             if (isset($_POST['titre']) && !empty($_POST['titre'])) {
                 // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux
-                $titre = htmlspecialchars($_POST['titre']);
+                $titre = htmlspecialchars($_POST['titre'], ENT_QUOTES);
                 $query = "UPDATE annonces SET titre = '$titre' WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
             if (isset($_POST['tarif']) && !empty($_POST['tarif'])) {
-                $tarif = $_POST['tarif'];
+                $tarif = htmlspecialchars($_POST['tarif'], ENT_QUOTES);
                 $query = "UPDATE annonces SET tarif = $tarif * 100 WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
             if (isset($_POST['ville']) && !empty($_POST['ville'])) {
-                $ville = htmlspecialchars($_POST['ville']);
+                $ville = htmlspecialchars($_POST['ville'], ENT_QUOTES);
                 $query = "UPDATE annonces SET ville = '$ville' WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
             if (isset($_POST['m2']) && !empty($_POST['m2'])) {
-                $m2 = $_POST['m2'];
+                $m2 = htmlspecialchars($_POST['m2'], ENT_QUOTES);
                 $query = "UPDATE annonces SET m2 = '$m2' WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
             if (isset($_POST['description']) && !empty($_POST['description'])) {
-                $description = htmlspecialchars($_POST['description']);
+                $description = htmlspecialchars($_POST['description'], ENT_QUOTES);
                 $query = "UPDATE annonces SET description = '$description' WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
