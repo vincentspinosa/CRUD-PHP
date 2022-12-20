@@ -3,7 +3,7 @@ require 'assets/include/init.php'; // On inclut le fichier d'initialisation
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fichiers
 
-echo 'YY';
+echo 'JJ';
 
 /////////////////////////////////
 // Code pour proster une annonce
@@ -15,10 +15,12 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
 
         // Si tous les champs nécessaires sont remplis        
         if (isset($_FILES['photo']) && isset($_POST['titre']) && isset($_POST['tarif']) && isset($_POST['m2']) && isset($_POST['ville'])) {
-            $titre = htmlspecialchars($_POST['titre']);
+            $titre = htmlspecialchars($_POST['titre']); // htmlspecialchars dit à l'interpréteur de lire les caractères HTML spéciaux comme des caractères normaux
             $tarif = $_POST['tarif'] * 100;
             $m2 = $_POST['m2'];
             $ville = htmlspecialchars($_POST['ville']);
+            // écriture ternaire
+            // $variable = (condition) ? option 1 : option 2
             $description = (isset($_POST['description'])) ? htmlspecialchars($_POST['description']) : NULL;
 
             // On essaye d'uploader la photo
@@ -29,15 +31,14 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             }
 
             // On sélectionne le nombre d'annonces pour avoir le total
-            $query = "SELECT * FROM annonces";
-            $query = $pdo->prepare($query);
-            $query->execute();
+            $query = "SELECT * FROM annonces"; // On prépare notre requête à l'avance
+            $query = $pdo->prepare($query); // On utilise la méthode 'prepare' de l'objet PDO pour se protéger des injections SQL
+            $query->execute(); // On exécute la requête
             $resultA = $query->rowCount(); // On récupère le total
 
             // On insère la nouvelle annonce dans notre Base de données
-            //On prépare notre requuête à l'avance
             $query = "INSERT INTO annonces (titre, tarif, m2, ville, description, photo) VALUES ('$titre', $tarif, $m2, '$ville', '$description', '$fichierCible')";
-            $query = $pdo->prepare($query); // On utilise la méthode 'prepare' de l'objet PDO
+            $query = $pdo->prepare($query); // On utilise la méthode 'prepare' de l'objet PDO pour se protéger des injections SQL
             $query->execute(); // On exécute la requête
 
             // On sélectionne le nombre d'annonces pour avoir le total
@@ -57,7 +58,7 @@ if (isset($_POST['submit'])) { // Si le formulaire a été envoyé
             $messageTraite = false;
             $messageErreur = []; // On crée un array pour stocker les possibles message d'erreurs
             // Pour chaque erreur, on ajoute le message à l'array
-            if (!isset($_POST['photo'])) {
+            if (!isset($_FILES['photo'])) {
                 $messageErreur += "La photo est manquante.<br>";
             }
             if (!isset($_POST['titre'])) {
@@ -117,7 +118,6 @@ if ($photoOK === false) {
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
                     <div class="mb-3">
                         <label for="photo" class="textMoyen pb-2">Photo :</label>
-                        <!-- <input type="hidden" name="MAX_FILE_SIZE" value="50000"/> -->
                         <input type="file" name="photo" class="form-control bg-transparent">
                     </div>
                     <div class="mb-3">

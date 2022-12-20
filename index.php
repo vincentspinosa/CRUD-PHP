@@ -4,22 +4,28 @@ include 'assets/include/components/Card.php'; // On importe le composant Card
 include 'assets/include/components/Message.php'; // On inclut le composant Message
 include 'assets/include/upload_file.php'; // On inclut le fichier d'upload de fichiers
 
+//////////////////////////////////////////////
 // Pour supprimer un élément
-if (isset($_POST['submitDelete'])) {
-    if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
+//////////////////////////////////////////////
+if (isset($_POST['submitDelete'])) { // Si le formulaire a été envoyé
+    if ($_POST['csrf_token'] === $_SESSION['csrf_token']) { // Si l'input 'token_csrf' est valide
         
         $id = $_POST['id'];
-        $queryDelete = "SELECT * FROM annonces WHERE id = $id";
-        $queryDelete = $pdo->prepare($queryDelete);
-        $queryDelete->execute();
-        $data = $queryDelete->fetchAll(PDO::FETCH_ASSOC);
+        $queryDelete = "SELECT * FROM annonces WHERE id = $id"; // On prépare notre requête à l'avance
+        $queryDelete = $pdo->prepare($queryDelete); // On utilise la méthode 'prepare' de l'objet PDO pour se protéger des injections SQL
+        $queryDelete->execute(); // On exécute notre requête
+        $data = $queryDelete->fetchAll(PDO::FETCH_ASSOC); // On stocke le résultat de la requête dans un array
 
         if ($queryDelete->rowCount() === 1) {
-            unlink($data[0]['photo']); // On supprime la photo
+             // On supprime la photo
+            unlink($data[0]['photo']);
+
+            // On supprime l'annonce
             $queryDelete = "DELETE FROM annonces WHERE id = $id";
             $queryDelete = $pdo->prepare($queryDelete);
             $queryDelete->execute();
 
+            // On vérifie que l'annonce est supprimée
             $queryDelete = "SELECT * FROM annonces WHERE id = $id";
             $queryDelete = $pdo->prepare($queryDelete);
             $queryDelete->execute();
@@ -36,7 +42,9 @@ if (isset($_POST['submitDelete'])) {
     }
 }
 
+//////////////////////////////////////////////
 //Pour modifier un élément
+//////////////////////////////////////////////
 if (isset($_POST['submitModifier'])) {
     if ($_POST['csrf_token'] === $_SESSION['csrf_token']) {
 
@@ -48,18 +56,21 @@ if (isset($_POST['submitModifier'])) {
         if ($queryModif->rowCount() === 1) {
             if (isset($_FILES['photo'])) {
                 $data = $queryModif->fetchAll();
+                // On essaye d'uploader la photo
                 $photo = upload_file();
                 if ($photo !== true) { // Si on échoue, on arrête le processus
                     goto endgoto;
                 }
+                // On supprime l'ancienne photo
                 unlink($data[0]['photo']);
+                // On modifie l'adresse de la photo dans la base de données
                 $query = "UPDATE annonces SET photo = '$fichierCible' WHERE id = $id";
                 $query = $pdo->prepare($query);
                 $query->execute();
             }
             endgoto:
             if (isset($_POST['titre']) && !empty($_POST['titre'])) {
-                // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme "") comme des caractères normaux
+                // htmlspecialchars dit à l'interpréteur de considérer les caractères HTML spéciaux (comme ") comme des caractères normaux
                 $titre = htmlspecialchars($_POST['titre']);
                 $query = "UPDATE annonces SET titre = '$titre' WHERE id = $id";
                 $query = $pdo->prepare($query);
@@ -101,7 +112,6 @@ if (isset($_POST['submitModifier'])) {
 // On sélectionne les annonces de la BDD
 /////////////////////////////////////////
 
-// On prépare notre requête
 $query = "SELECT * FROM annonces";
 // On détermine de quelle manière trier les annonces
 if (isset($_GET['submitSort'])) {
@@ -184,6 +194,7 @@ if ($annonceModif === true) {
                                     echo " selected";
                                 }
                             }
+                            // Valeur par défaut
                             if ($arr[0] === 'Date ↓') {
                                 if (!isset($_GET['sortBy'])) {
                                     echo " selected";

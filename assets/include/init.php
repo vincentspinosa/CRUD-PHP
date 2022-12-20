@@ -11,7 +11,7 @@ catch(Exception $e) {
     die('Erreur : '.$e->getMessage());
 }
 
-// On crée un Token CSRF pour nous protéger des Cross-Site Request Forgery
+// On crée un Token CSRF qui nous servira à nous protéger des Cross-Site Request Forgery
 if(!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

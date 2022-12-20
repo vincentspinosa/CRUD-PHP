@@ -2,14 +2,7 @@
 
 class Card {
     // On construit notre objet
-    // Chaque paramètre passé au constructeur sera une propriété de l'objet
     function __construct(int $id, string $title, string $image, int $tarif, int $m2, string $city, string $description) {
-        $this->ID = $id;
-        $this->Title = $title;
-        $this->Image = $image;
-        $this->Tarif = $tarif;
-        $this->M2 = $m2;
-        $this->City = $city;
         // On construit le code HTML qui sera affiché
         $this->HTML = "
             <div class=\"col-10 col-md-5 col-lg-4 col-xl-3 mx-3 mb-3\">
@@ -40,11 +33,6 @@ class Card {
                         </div>
                     </div>
                     <div class=\"d-flex justify-content-around\">
-                        <!---<div>
-                            <button type=\"button\" class=\"btn btn-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#ModalVoir".$id."\">
-                                Voir
-                            </button>
-                        </div>--->
                         <div>
                             <button type=\"button\" class=\"btn btn-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#ModalModifier".$id."\">
                                 Modifier
@@ -101,10 +89,6 @@ class Card {
                                 </div>
                             </form>
                         </div>
-                        <!---<div class=\"modal-footer\">
-                            <button type=\"button\" class=\"btn btn-primary\" data-bs-dismiss=\"modal\">Modifier</button>
-                            <button type=\"button\" class=\"btn btn-secondary\">Annuler</button>
-                        </div>--->
                     </div>
                 </div>
             </div>
@@ -128,7 +112,6 @@ class Card {
                                 <input type=\"submit\" name=\"submitDelete\" value=\"Supprimer\" class=\"btn bg-danger text-white btn-form\">
                                 <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\" >Annuler</button>
                             </div>
-                        <!--<button type=\"button\" class=\"btn btn-danger\" data-bs-dismiss=\"modal\"><a href=\"index.php?delete=".$id."\" class=\"text-white text-decoration-none\">Supprimer</a></button>-->
                         </form>
                     </div>
                     </div>
